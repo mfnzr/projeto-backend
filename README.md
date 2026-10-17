@@ -1,108 +1,51 @@
- HEAD
-## Problem Track
+# projeto-backend
 
-"Problem Track" is the ultimate solution for organizations seeking to enhance their problem resolution processes, drive operational efficiency, and deliver exceptional customer experiences.
+## Descrição do projeto
 
-### Dependências
+Sistema de vendas para uma casa de carnes assadas (frango, porco, costela), desenvolvido na disciplina de Desenvolvimento de Aplicações Back-End (TSI34D) da UTFPR Guarapuava.
 
-- Docker
-- Docker Compose
+O sistema controla produtos, produção diária, compras, clientes, pedidos e acompanhamentos, com acesso separado para administradores e atendentes.
 
-### To run
+Mais detalhes na [Wiki](https://github.com/mfnzr/projeto-backend/wiki).
 
-#### Clone Repository
+## Como executar o projeto
 
-```
-$ git clone git@github.com:SI-DABE/problem-track.git
-$ cd problem-track
-```
-
-#### Define the env variables
+Dependências: apenas **Docker** e **Docker Compose**.
 
 ```
-$ cp .env.example .env
+git clone https://github.com/mfnzr/projeto-backend.git
+cd projeto-backend
+cp .env.example .env
+./run composer install
+./run up -d
+./run db:reset
+./run db:populate
 ```
 
-#### Install the dependencies
+Acesse [localhost](http://localhost).
 
-```
-$ ./run composer install
-```
-
-#### Up the containers
-
-```
-$ docker compose up -d
-```
-
-ou
-
-```
-$ ./run up -d
-```
-
-#### Create database and tables
-
-```
-$ ./run db:reset
-```
-
-#### Populate database
-
-```
-$ ./run db:populate
-```
-
-### Fixed uploads folder permission
+Permissão da pasta de uploads, se necessário:
 
 ```
 sudo chown www-data:www-data public/assets/uploads
 ```
 
-#### Run the tests
+### Testes e linters
 
 ```
-$ docker compose run --rm php ./vendor/bin/phpunit tests --color
+./run test          # PHPUnit
+./run test:browser  # Codeception (aceitação)
+./run phpcs         # PHP_CodeSniffer
+./run phpstan       # PHPStan
 ```
 
-ou
+## Como contribuir
 
-```
-$ ./run test
-```
+1. Crie a branch da entrega a partir da `main` com o prefixo `epic/` (ex.: `epic/autenticacao`).
+2. Crie as branches de funcionalidade a partir da epic com o prefixo `feature/` (ex.: `feature/login`).
+3. Abra Pull Requests das features para a epic. O CI (GitHub Actions) precisa passar.
+4. Ao concluir a entrega, abra a PR da epic para a `main`.
 
-#### Run the linters
+## Licença
 
-[PHPCS](https://github.com/PHPCSStandards/PHP_CodeSniffer/)
-
-```
-$ ./run phpcs
-```
-
-[PHPStan](https://phpstan.org/)
-
-```
-$ ./run phpstan
-```
-
-Access [localhost](http://localhost)
-
-### Teste de API
-
-#### Rota não autenticada
-
-```shell
-curl -H "Accept: application/json" localhost/problems
-```
-
-#### Rota autenticada
-
-Neste caso precisa alterar o valor do PHPSESSID de acordo com a o id da sua sessão.
-
-```shell
-curl -H "Accept: application/json" -b "PHPSESSID=5f55f364a48d87fb7ef9f18425a8ae88" localhost/problems
-```
-=======
-# projeto-backend
-Projeto referente a disciplina de backend
-8f945de620273eb85990473d8a9038a9a4ed2793
+Este projeto está sob a licença MIT.

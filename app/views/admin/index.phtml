@@ -1,0 +1,10 @@
+<div class="card border-danger">
+    <div class="card-body">
+        <p class="card-text">
+            Olá, <strong><?= htmlspecialchars($this->currentUser()->name) ?></strong>! Você está na área administrativa.
+        </p>
+        <p class="card-text text-muted small mb-0">
+            Esta área é acessível apenas por administradores.
+        </p>
+    </div>
+</div>

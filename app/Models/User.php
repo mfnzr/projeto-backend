@@ -11,24 +11,30 @@ use Core\Database\ActiveRecord\Model;
  * @property string $email
  * @property string $encrypted_password
  * @property string $avatar_name
+ * @property string $role
  */
 class User extends Model
 {
     protected static string $table = 'users';
-    protected static array $columns = ['name', 'email', 'encrypted_password', 'avatar_name'];
+    protected static array $columns = ['name', 'email', 'encrypted_password', 'avatar_name', 'role'];
 
     protected ?string $password = null;
     protected ?string $password_confirmation = null;
+
+    public const array ROLES = ['admin', 'attendant'];
 
     public function validates(): void
     {
         Validations::notEmpty('name', $this);
         Validations::notEmpty('email', $this);
-
+        Validations::notEmpty('role', $this);
         Validations::uniqueness('email', $this);
 
         if ($this->newRecord()) {
             Validations::passwordConfirmation($this);
+        }
+        if (!in_array($this->role, self::ROLES, true)) {
+            $this->addError('role', 'Perfil inválido');
         }
     }
 
@@ -57,5 +63,10 @@ class User extends Model
         ) {
             $this->encrypted_password = password_hash($value, PASSWORD_DEFAULT);
         }
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }

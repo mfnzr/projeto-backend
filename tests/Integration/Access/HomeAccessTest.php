@@ -18,11 +18,19 @@ class HomeAccessTest extends TestCase
         ]);
     }
 
-    public function test_should_access_home_route(): void
+    public function test_should_access_login_route(): void
+    {
+        $response = $this->client->get('/login');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringContainsString('Entrar', (string) $response->getBody());
+    }
+
+    public function test_should_redirect_home_route_to_login_when_not_authenticated(): void
     {
         $response = $this->client->get('/');
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertStringContainsString('Home Page', (string) $response->getBody());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/login', $response->getHeaderLine('Location'));
     }
 }

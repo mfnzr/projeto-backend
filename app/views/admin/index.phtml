@@ -3,8 +3,11 @@
         <p class="card-text">
             Olá, <strong><?= htmlspecialchars($this->currentUser()->name) ?></strong>! Você está na área administrativa.
         </p>
-        <p class="card-text text-muted small mb-0">
+        <p class="card-text text-muted small">
             Esta área é acessível apenas por administradores.
         </p>
+        <a href="<?= route('products.index') ?>" class="btn btn-danger">
+            <i class="bi bi-box-seam"></i> Gerenciar produtos
+        </a>
     </div>
 </div>

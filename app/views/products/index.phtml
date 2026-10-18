@@ -1,0 +1,46 @@
+<div class="mb-3">
+    <a href="<?= route('products.new') ?>" class="btn btn-danger">
+        <i class="bi bi-plus-lg"></i> Novo produto
+    </a>
+</div>
+
+<?php if (empty($products)) : ?>
+    <p class="text-muted">Nenhum produto cadastrado.</p>
+<?php else : ?>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($products as $product) : ?>
+                    <tr>
+                        <td><?= $product->id ?></td>
+                        <td><?= htmlspecialchars($product->name) ?></td>
+                        <td class="text-muted"><?= htmlspecialchars($product->description ?? '') ?></td>
+                        <td class="text-end text-nowrap">
+                            <a href="<?= route('products.show', ['id' => $product->id]) ?>" class="btn btn-sm btn-outline-secondary" title="Ver">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="<?= route('products.edit', ['id' => $product->id]) ?>" class="btn btn-sm btn-outline-primary" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="<?= route('products.destroy', ['id' => $product->id]) ?>" method="POST" class="d-inline"
+                                onsubmit="return confirm('Excluir o produto <?= htmlspecialchars($product->name, ENT_QUOTES) ?>?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>

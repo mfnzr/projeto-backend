@@ -18,7 +18,8 @@ class UserTest extends TestCase
             'name' => 'User 1',
             'email' => 'fulano@example.com',
             'password' => '123456',
-            'password_confirmation' => '123456'
+            'password_confirmation' => '123456',
+            'role' => 'attendant'
         ]);
         $this->user->save();
 
@@ -26,7 +27,8 @@ class UserTest extends TestCase
             'name' => 'User 2',
             'email' => 'fulano1@example.com',
             'password' => '123456',
-            'password_confirmation' => '123456'
+            'password_confirmation' => '123456',
+            'role' => 'attendant'
         ]);
         $this->user2->save();
     }
@@ -91,7 +93,8 @@ class UserTest extends TestCase
             'name' => 'User 3',
             'email' => 'fulano3@example.com',
             'password' => '123456',
-            'password_confirmation' => '1234567'
+            'password_confirmation' => '1234567',
+            'role' => 'attendant'
         ]);
 
         $this->assertFalse($user->isValid());
@@ -129,6 +132,58 @@ class UserTest extends TestCase
     public function test_authenticate_should_return_false(): void
     {
         $this->assertFalse($this->user->authenticate(''));
+    }
+
+    public function test_should_not_save_user_without_role(): void
+    {
+        $user = new User([
+            'name' => 'User 3',
+            'email' => 'fulano3@example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456'
+        ]);
+
+        $this->assertFalse($user->save());
+        $this->assertEquals('Perfil inválido', $user->errors('role'));
+    }
+
+    public function test_should_not_save_user_with_invalid_role(): void
+    {
+        $user = new User([
+            'name' => 'User 3',
+            'email' => 'fulano3@example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456',
+            'role' => 'manager'
+        ]);
+
+        $this->assertFalse($user->save());
+        $this->assertEquals('Perfil inválido', $user->errors('role'));
+    }
+
+    public function test_should_save_user_with_admin_role(): void
+    {
+        $user = new User([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456',
+            'role' => 'admin'
+        ]);
+
+        $this->assertTrue($user->save());
+        $this->assertEquals('admin', User::findById($user->id)->role);
+    }
+
+    public function test_is_admin_should_return_true_for_admin(): void
+    {
+        $this->user->role = 'admin';
+        $this->assertTrue($this->user->isAdmin());
+    }
+
+    public function test_is_admin_should_return_false_for_attendant(): void
+    {
+        $this->assertFalse($this->user->isAdmin());
     }
 
     public function test_update_should_not_change_the_password(): void

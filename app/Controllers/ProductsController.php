@@ -9,11 +9,19 @@ use Core\Http\Request;
 
 class ProductsController extends Controller
 {
-    public function index(): void
+    public function index(Request $request): void
     {
         $title = 'Controle de produtos';
-        $products = Product::all();
-        $this->render('products/index', compact('title', 'products'));
+
+        $page = (int) $request->getParam('page', 1);
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $paginator = Product::paginate(page: $page, per_page: 10, route: 'products.index');
+        $products = $paginator->registers();
+
+        $this->render('products/index', compact('title', 'products', 'paginator'));
     }
 
     public function edit(Request $request): void
@@ -84,7 +92,10 @@ class ProductsController extends Controller
             $this->redirectTo(route('products.index'));
         }
 
-        if ($product->destroy()) {
+        if ($product->hasMovements()) {
+            FlashMessage::danger("Não é possível excluir um produto com produções, compras, pedidos ou vendas registrados");
+            $this->redirectTo(route('products.index'));
+        } elseif ($product->destroy()) {
             FlashMessage::success("Produto excluido com sucesso!");
             $this->redirectTo(route('products.index'));
         } else {

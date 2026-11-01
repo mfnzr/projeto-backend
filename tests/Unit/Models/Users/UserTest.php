@@ -186,6 +186,65 @@ class UserTest extends TestCase
         $this->assertFalse($this->user->isAdmin());
     }
 
+    public function test_should_not_save_user_with_invalid_email(): void
+    {
+        $user = new User([
+            'name' => 'User 3',
+            'email' => 'fulano3.example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456',
+            'role' => 'attendant'
+        ]);
+
+        $this->assertFalse($user->save());
+        $this->assertEquals('deve ser um e-mail válido!', $user->errors('email'));
+    }
+
+    public function test_should_not_save_user_with_duplicated_email(): void
+    {
+        $user = new User([
+            'name' => 'User 3',
+            'email' => 'fulano@example.com',
+            'password' => '123456',
+            'password_confirmation' => '123456',
+            'role' => 'attendant'
+        ]);
+
+        $this->assertFalse($user->save());
+        $this->assertEquals('já existe um registro com esse dado', $user->errors('email'));
+    }
+
+    public function test_should_not_save_new_user_without_password(): void
+    {
+        $user = new User([
+            'name' => 'User 3',
+            'email' => 'fulano3@example.com',
+            'role' => 'attendant'
+        ]);
+
+        $this->assertFalse($user->save());
+        $this->assertEquals('não pode ser vazio!', $user->errors('password'));
+    }
+
+    public function test_should_update_user_without_password(): void
+    {
+        $user = User::findById($this->user->id);
+        $user->name = 'Fulano de Tal';
+        $user->role = 'admin';
+
+        $this->assertTrue($user->save());
+        $this->assertEquals('Fulano de Tal', User::findById($this->user->id)->name);
+        $this->assertTrue(User::findById($this->user->id)->isAdmin());
+    }
+
+    public function test_role_name_should_return_the_role_in_portuguese(): void
+    {
+        $this->assertEquals('Atendente', $this->user->roleName());
+
+        $this->user->role = 'admin';
+        $this->assertEquals('Administrador', $this->user->roleName());
+    }
+
     public function test_update_should_not_change_the_password(): void
     {
         $this->user->password = '654321';

@@ -3,6 +3,7 @@
 namespace Tests\Integration\Controllers;
 
 use App\Models\Product;
+use App\Models\Production;
 use App\Models\User;
 
 class ProductsControllerTest extends ControllerTestCase
@@ -40,6 +41,25 @@ class ProductsControllerTest extends ControllerTestCase
         $this->assertStringContainsString('Frango assado', $response);
         $this->assertStringContainsString('Pernil', $response);
         $this->assertStringContainsString('Novo produto', $response);
+    }
+
+    public function test_index_should_paginate_products(): void
+    {
+        for ($i = 1; $i <= 10; $i++) {
+            $product = new Product(['name' => 'Produto ' . $i]);
+            $product->save();
+        }
+
+        $response = $this->get(
+            action: 'index',
+            controllerName: 'App\Controllers\ProductsController',
+            params: ['page' => 2]
+        );
+
+        $this->assertStringContainsString('Produto 10', $response);
+        $this->assertStringNotContainsString('Frango assado', $response);
+        $this->assertStringContainsString('Mostrando 11 - 11 de 11', $response);
+        $this->assertStringContainsString('href="/admin/products?page=1"', $response);
     }
 
     public function test_show_should_render_the_product(): void
@@ -143,5 +163,25 @@ class ProductsControllerTest extends ControllerTestCase
 
         $this->assertEquals('Location: /admin/products', $response);
         $this->assertCount(0, Product::all());
+    }
+
+    public function test_destroy_should_not_remove_product_with_productions(): void
+    {
+        $production = new Production([
+            'product_id' => $this->product->id,
+            'production_date' => '2026-11-01',
+            'quantity' => '10',
+            'price_per_kg' => '45.90'
+        ]);
+        $production->save();
+
+        $response = $this->post(
+            action: 'destroy',
+            controllerName: 'App\Controllers\ProductsController',
+            params: ['id' => $this->product->id]
+        );
+
+        $this->assertEquals('Location: /admin/products', $response);
+        $this->assertCount(1, Product::all());
     }
 }

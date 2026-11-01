@@ -1,0 +1,4 @@
+<form action="<?= route('side_dishes.update', ['id' => $sideDish->id]) ?>" method="POST" class="col-md-6">
+    <input type="hidden" name="_method" value="PUT">
+    <?php require '_form.phtml'; ?>
+</form>

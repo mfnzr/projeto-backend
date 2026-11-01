@@ -1,0 +1,44 @@
+<div class="card col-lg-8">
+    <div class="card-body">
+        <h2 class="h4 card-title">Pedido #<?= $order->id ?></h2>
+        <p class="card-text mb-1"><strong>Cliente:</strong> <?= htmlspecialchars($order->customer->name) ?> - <?= htmlspecialchars($order->customer->phone) ?></p>
+        <p class="card-text mb-1"><strong>Data:</strong> <?= date('d/m/Y H:i', strtotime($order->created_at)) ?></p>
+        <p class="card-text"><strong>Status:</strong> <?= $order->statusName() ?></p>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th class="text-end">Unidades</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($order->items as $item) : ?>
+                    <tr>
+                        <td><?= htmlspecialchars($item->product->name) ?></td>
+                        <td class="text-end"><?= $item->quantity ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <div class="d-flex flex-wrap gap-2">
+            <?php if ($order->isOrdered()) : ?>
+                <a href="<?= route('sales.new', ['order_id' => $order->id]) ?>" class="btn btn-success">
+                    <i class="bi bi-bag-check"></i> Registrar retirada
+                </a>
+                <a href="<?= route('orders.edit', ['id' => $order->id]) ?>" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+                <form action="<?= route('orders.cancel', ['id' => $order->id]) ?>" method="POST"
+                    onsubmit="return confirm('Cancelar este pedido? As unidades voltam para o disponível.')">
+                    <input type="hidden" name="_method" value="PUT">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-x-circle"></i> Cancelar pedido
+                    </button>
+                </form>
+            <?php endif; ?>
+            <a href="<?= route('orders.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

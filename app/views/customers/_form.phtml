@@ -1,0 +1,20 @@
+<div class="mb-3">
+    <label for="customer_name" class="form-label">Nome</label>
+    <input type="text" id="customer_name" name="customer[name]" maxlength="100"
+        class="form-control <?= $customer->errors('name') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($customer->name ?? '') ?>">
+    <div class="invalid-feedback"><?= $customer->errors('name') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="customer_phone" class="form-label">Telefone <span class="text-muted small">(só números, com DDD)</span></label>
+    <input type="text" id="customer_phone" name="customer[phone]" maxlength="20"
+        class="form-control <?= $customer->errors('phone') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($customer->phone ?? '') ?>">
+    <div class="invalid-feedback"><?= $customer->errors('phone') ?></div>
+</div>
+
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">Salvar</button>
+    <a href="<?= route('customers.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+</div>

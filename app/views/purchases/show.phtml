@@ -1,0 +1,22 @@
+<div class="card col-md-6">
+    <div class="card-body">
+        <h2 class="h4 card-title"><?= htmlspecialchars($purchase->product->name) ?></h2>
+        <p class="card-text mb-1"><strong>Data:</strong> <?= date('d/m/Y', strtotime($purchase->purchase_date)) ?></p>
+        <p class="card-text mb-1"><strong>Unidades:</strong> <?= $purchase->quantity ?></p>
+        <p class="card-text mb-1"><strong>Valor total:</strong> R$ <?= number_format((float) $purchase->total_amount, 2, ',', '.') ?></p>
+
+        <?php if ($purchase->price_per_kg === null) : ?>
+            <p class="card-text text-muted">Preço por kg não informado.</p>
+        <?php else : ?>
+            <p class="card-text mb-1"><strong>Preço por kg:</strong> R$ <?= number_format((float) $purchase->price_per_kg, 2, ',', '.') ?></p>
+            <p class="card-text"><strong>Peso comprado:</strong> <?= number_format($purchase->weight(), 3, ',', '.') ?> kg</p>
+        <?php endif; ?>
+
+        <div class="d-flex gap-2">
+            <a href="<?= route('purchases.edit', ['id' => $purchase->id]) ?>" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="<?= route('purchases.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

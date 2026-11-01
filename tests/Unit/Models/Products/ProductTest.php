@@ -3,6 +3,8 @@
 namespace Tests\Unit\Models\Products;
 
 use App\Models\Product;
+use App\Models\Production;
+use App\Models\Purchase;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
@@ -92,6 +94,53 @@ class ProductTest extends TestCase
     public function test_find_by_id_should_return_the_product(): void
     {
         $this->assertEquals('Frango assado', Product::findById($this->product->id)->name);
+    }
+
+    public function test_has_movements_should_return_false_without_productions_and_purchases(): void
+    {
+        $this->assertFalse($this->product->hasMovements());
+    }
+
+    public function test_has_movements_should_return_true_with_a_production(): void
+    {
+        $production = new Production([
+            'product_id' => $this->product->id,
+            'production_date' => '2026-11-01',
+            'quantity' => '10',
+            'price_per_kg' => '45.90'
+        ]);
+        $production->save();
+
+        $this->assertTrue($this->product->hasMovements());
+    }
+
+    public function test_has_movements_should_return_true_with_a_purchase(): void
+    {
+        $purchase = new Purchase([
+            'product_id' => $this->product->id,
+            'purchase_date' => '2026-11-01',
+            'quantity' => '10',
+            'total_amount' => '300.00'
+        ]);
+        $purchase->save();
+
+        $this->assertTrue($this->product->hasMovements());
+    }
+
+    public function test_paginate_should_return_ten_products_per_page(): void
+    {
+        for ($i = 1; $i <= 11; $i++) {
+            $product = new Product(['name' => 'Produto ' . $i]);
+            $product->save();
+        }
+
+        $firstPage = Product::paginate(page: 1, per_page: 10);
+        $secondPage = Product::paginate(page: 2, per_page: 10);
+
+        $this->assertCount(10, $firstPage->registers());
+        $this->assertCount(2, $secondPage->registers());
+        $this->assertEquals(2, $firstPage->totalOfPages());
+        $this->assertEquals(12, $firstPage->totalOfRegisters());
     }
 
     public function test_find_by_id_should_return_null(): void

@@ -58,6 +58,11 @@ class AdminAccessTest extends TestCase
             'admin panel' => ['/admin/painel'],
             'products list' => ['/admin/products'],
             'new product form' => ['/admin/products/new'],
+            'side dishes list' => ['/admin/side-dishes'],
+            'new side dish form' => ['/admin/side-dishes/new'],
+            'users list' => ['/admin/users'],
+            'new user form' => ['/admin/users/new'],
+            'margin report' => ['/admin/reports'],
         ];
     }
 
@@ -101,6 +106,26 @@ class AdminAccessTest extends TestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(0, Product::all());
+    }
+
+    public function test_attendant_cannot_create_user(): void
+    {
+        $this->login('fulano@example.com');
+
+        $response = $this->client->post('/admin/users', [
+            'form_params' => [
+                'user' => [
+                    'name' => 'Invasor',
+                    'email' => 'invasor@example.com',
+                    'role' => 'admin',
+                    'password' => '123456',
+                    'password_confirmation' => '123456'
+                ]
+            ]
+        ]);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertNull(User::findByEmail('invasor@example.com'));
     }
 
     public function test_attendant_can_access_user_area(): void

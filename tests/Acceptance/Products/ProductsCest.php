@@ -48,6 +48,53 @@ class ProductsCest extends BaseAcceptanceCest
         $page->see('Pernil suíno');
     }
 
+    public function adminCannotUpdateProductWithInvalidData(AcceptanceTester $page): void
+    {
+        $product = new Product(['name' => 'Pernil']);
+        $product->save();
+
+        $page->login('admin@example.com', '123456');
+        $page->amOnPage('/admin/products/' . $product->id . '/edit');
+
+        $page->fillField('product[name]', '');
+        $page->click('Salvar');
+
+        $page->see('Não foi possível atualizar o produto!');
+        $page->see('não pode ser vazio!');
+    }
+
+    public function adminListsProducts(AcceptanceTester $page): void
+    {
+        $first = new Product(['name' => 'Pernil']);
+        $first->save();
+        $second = new Product(['name' => 'Costela bovina']);
+        $second->save();
+
+        $page->login('admin@example.com', '123456');
+        $page->amOnPage('/admin/products');
+
+        $page->see('Pernil');
+        $page->see('Costela bovina');
+    }
+
+    public function adminPaginatesProducts(AcceptanceTester $page): void
+    {
+        for ($i = 1; $i <= 11; $i++) {
+            $product = new Product(['name' => 'Produto ' . $i]);
+            $product->save();
+        }
+
+        $page->login('admin@example.com', '123456');
+        $page->amOnPage('/admin/products');
+
+        $page->see('Mostrando 1 - 10 de 11');
+        $page->click('Próxima');
+
+        $page->seeInCurrentUrl('page=2');
+        $page->see('Mostrando 11 - 11 de 11');
+        $page->see('Produto 11');
+    }
+
     public function adminDeletesProduct(AcceptanceTester $page): void
     {
         $product = new Product(['name' => 'Linguiça']);

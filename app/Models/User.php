@@ -26,12 +26,17 @@ class User extends Model
     public function validates(): void
     {
         Validations::notEmpty('name', $this);
-        Validations::notEmpty('email', $this);
         Validations::notEmpty('role', $this);
+
+        if (Validations::notEmpty('email', $this)) {
+            Validations::email('email', $this);
+        }
         Validations::uniqueness('email', $this);
 
         if ($this->newRecord()) {
-            Validations::passwordConfirmation($this);
+            if (Validations::notEmpty('password', $this)) {
+                Validations::passwordConfirmation($this);
+            }
         }
         if (!in_array($this->role, self::ROLES, true)) {
             $this->addError('role', 'Perfil inválido');
@@ -68,5 +73,14 @@ class User extends Model
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function roleName(): string
+    {
+        if ($this->isAdmin()) {
+            return 'Administrador';
+        }
+
+        return 'Atendente';
     }
 }

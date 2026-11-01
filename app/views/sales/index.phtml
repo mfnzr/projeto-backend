@@ -1,0 +1,58 @@
+<div class="mb-3">
+    <a href="<?= route('sales.new') ?>" class="btn btn-danger">
+        <i class="bi bi-plus-lg"></i> Nova venda
+    </a>
+</div>
+
+<?php if (empty($sales)) : ?>
+    <p class="text-muted">Nenhuma venda registrada.</p>
+<?php else : ?>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Data</th>
+                    <th>Origem</th>
+                    <th>Pagamento</th>
+                    <th>Total</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($sales as $sale) : ?>
+                    <tr>
+                        <td><?= $sale->id ?></td>
+                        <td><?= date('d/m/Y H:i', strtotime($sale->created_at)) ?></td>
+                        <td>
+                            <?php if ($sale->isFromOrder()) : ?>
+                                Pedido #<?= $sale->order_id ?>
+                            <?php else : ?>
+                                Balcão
+                            <?php endif; ?>
+                        </td>
+                        <td><?= $sale->paymentMethodName() ?></td>
+                        <td>R$ <?= number_format($sale->total(), 2, ',', '.') ?></td>
+                        <td class="text-end text-nowrap">
+                            <a href="<?= route('sales.show', ['id' => $sale->id]) ?>" class="btn btn-sm btn-outline-secondary" title="Ver">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="<?= route('sales.edit', ['id' => $sale->id]) ?>" class="btn btn-sm btn-outline-primary" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="<?= route('sales.destroy', ['id' => $sale->id]) ?>" method="POST" class="d-inline"
+                                onsubmit="return confirm('Excluir a venda #<?= $sale->id ?>? As unidades voltam para o disponível.')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php $paginator->renderPagesNavigation(); ?>
+<?php endif; ?>

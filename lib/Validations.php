@@ -3,6 +3,7 @@
 namespace Lib;
 
 use Core\Database\Database;
+use DateTime;
 
 class Validations
 {
@@ -10,6 +11,51 @@ class Validations
     {
         if ($obj->$attribute === null || $obj->$attribute === '') {
             $obj->addError($attribute, 'não pode ser vazio!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function email($attribute, $obj)
+    {
+        if (filter_var($obj->$attribute, FILTER_VALIDATE_EMAIL) === false) {
+            $obj->addError($attribute, 'deve ser um e-mail válido!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function positiveInteger($attribute, $obj)
+    {
+        $value = filter_var($obj->$attribute, FILTER_VALIDATE_INT);
+
+        if ($value === false || $value < 1) {
+            $obj->addError($attribute, 'deve ser um número inteiro maior que zero!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function positiveNumber($attribute, $obj)
+    {
+        if (!is_numeric($obj->$attribute) || $obj->$attribute <= 0) {
+            $obj->addError($attribute, 'deve ser um valor maior que zero!');
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function date($attribute, $obj)
+    {
+        $value = (string) $obj->$attribute;
+        $date = DateTime::createFromFormat('Y-m-d', $value);
+
+        if ($date === false || $date->format('Y-m-d') !== $value) {
+            $obj->addError($attribute, 'deve ser uma data válida!');
             return false;
         }
 

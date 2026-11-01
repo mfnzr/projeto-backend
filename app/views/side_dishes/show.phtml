@@ -1,0 +1,13 @@
+<div class="card col-md-6">
+    <div class="card-body">
+        <h2 class="h4 card-title"><?= htmlspecialchars($sideDish->name) ?></h2>
+        <p class="card-text"><strong>Preço:</strong> R$ <?= number_format((float) $sideDish->price, 2, ',', '.') ?></p>
+
+        <div class="d-flex gap-2">
+            <a href="<?= route('side_dishes.edit', ['id' => $sideDish->id]) ?>" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="<?= route('side_dishes.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

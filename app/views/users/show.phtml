@@ -1,0 +1,14 @@
+<div class="card col-md-6">
+    <div class="card-body">
+        <h2 class="h4 card-title"><?= htmlspecialchars($user->name) ?></h2>
+        <p class="card-text mb-1"><strong>E-mail:</strong> <?= htmlspecialchars($user->email) ?></p>
+        <p class="card-text"><strong>Perfil:</strong> <?= $user->roleName() ?></p>
+
+        <div class="d-flex gap-2">
+            <a href="<?= route('users.edit', ['id' => $user->id]) ?>" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="<?= route('users.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

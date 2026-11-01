@@ -1,0 +1,48 @@
+<div class="mb-3">
+    <a href="<?= route('side_dishes.new') ?>" class="btn btn-danger">
+        <i class="bi bi-plus-lg"></i> Novo acompanhamento
+    </a>
+</div>
+
+<?php if (empty($sideDishes)) : ?>
+    <p class="text-muted">Nenhum acompanhamento cadastrado.</p>
+<?php else : ?>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($sideDishes as $sideDish) : ?>
+                    <tr>
+                        <td><?= $sideDish->id ?></td>
+                        <td><?= htmlspecialchars($sideDish->name) ?></td>
+                        <td>R$ <?= number_format((float) $sideDish->price, 2, ',', '.') ?></td>
+                        <td class="text-end text-nowrap">
+                            <a href="<?= route('side_dishes.show', ['id' => $sideDish->id]) ?>" class="btn btn-sm btn-outline-secondary" title="Ver">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="<?= route('side_dishes.edit', ['id' => $sideDish->id]) ?>" class="btn btn-sm btn-outline-primary" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="<?= route('side_dishes.destroy', ['id' => $sideDish->id]) ?>" method="POST" class="d-inline"
+                                onsubmit="return confirm('Excluir o acompanhamento <?= htmlspecialchars($sideDish->name, ENT_QUOTES) ?>?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php $paginator->renderPagesNavigation(); ?>
+<?php endif; ?>

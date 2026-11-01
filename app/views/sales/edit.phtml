@@ -1,0 +1,4 @@
+<form action="<?= route('sales.update', ['id' => $sale->id]) ?>" method="POST" class="col-lg-9">
+    <input type="hidden" name="_method" value="PUT">
+    <?php require '_form.phtml'; ?>
+</form>

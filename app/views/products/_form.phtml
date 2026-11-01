@@ -1,0 +1,19 @@
+<div class="mb-3">
+    <label for="product_name" class="form-label">Nome</label>
+    <input type="text" id="product_name" name="product[name]" maxlength="100"
+        class="form-control <?= $product->errors('name') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($product->name ?? '') ?>">
+    <div class="invalid-feedback"><?= $product->errors('name') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="product_description" class="form-label">Descrição <span class="text-muted small">(opcional)</span></label>
+    <textarea id="product_description" name="product[description]" rows="3"
+        class="form-control <?= $product->errors('description') ? 'is-invalid' : '' ?>"><?= htmlspecialchars($product->description ?? '') ?></textarea>
+    <div class="invalid-feedback"><?= $product->errors('description') ?></div>
+</div>
+
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">Salvar</button>
+    <a href="<?= route('products.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+</div>

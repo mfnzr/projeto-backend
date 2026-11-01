@@ -1,0 +1,63 @@
+<div class="mb-3">
+    <label for="order_customer_id" class="form-label">Cliente</label>
+    <select id="order_customer_id" name="order[customer_id]"
+        class="form-select <?= $order->errors('customer_id') ? 'is-invalid' : '' ?>">
+        <option value="">Selecione um cliente</option>
+        <?php foreach ($customers as $customer) : ?>
+            <option value="<?= $customer->id ?>" <?= $order->customer_id == $customer->id ? 'selected' : '' ?>>
+                <?= htmlspecialchars($customer->name) ?> - <?= htmlspecialchars($customer->phone) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <div class="invalid-feedback"><?= $order->errors('customer_id') ?></div>
+    <div class="form-text">
+        Cliente novo? <a href="<?= route('customers.new') ?>">Cadastre o cliente</a> antes de fazer o pedido.
+    </div>
+</div>
+
+<?php if ($order->errors('items')) : ?>
+    <div class="alert alert-danger"><?= $order->errors('items') ?></div>
+<?php endif; ?>
+
+<?php if (empty($productions)) : ?>
+    <div class="alert alert-info">
+        Nenhum produto foi para o forno hoje.
+        <a href="<?= route('productions.new') ?>">Faça a abertura do dia</a> antes de registrar pedidos.
+    </div>
+<?php else : ?>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço por kg</th>
+                    <th>Disponível</th>
+                    <th style="width: 10rem;">Unidades</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($productions as $production) : ?>
+                    <?php $productId = $production->product_id; ?>
+                    <?php $error = $order->errors('item_' . $productId); ?>
+                    <tr>
+                        <td><?= htmlspecialchars($production->product->name) ?></td>
+                        <td>R$ <?= number_format((float) $production->price_per_kg, 2, ',', '.') ?></td>
+                        <td><?= $production->available() + $order->savedQuantity($productId) ?></td>
+                        <td>
+                            <input type="number" step="1" name="quantities[<?= $productId ?>]"
+                                id="quantity_<?= $productId ?>" aria-label="Unidades de <?= htmlspecialchars($production->product->name) ?>"
+                                class="form-control <?= $error ? 'is-invalid' : '' ?>"
+                                value="<?= htmlspecialchars((string) $order->quantityOf($productId)) ?>">
+                            <div class="invalid-feedback"><?= $error ?></div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">Salvar</button>
+    <a href="<?= route('orders.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+</div>

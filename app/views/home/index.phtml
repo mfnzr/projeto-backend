@@ -1,1 +1,24 @@
-<p>TSI3D Framework Template</p>
+<div class="card">
+    <div class="card-body">
+        <p class="card-text">
+            Olá, <strong><?= htmlspecialchars($this->currentUser()->name) ?></strong>! Bem-vindo à área do usuário.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="<?= route('sales.new') ?>" class="btn btn-danger">
+                <i class="bi bi-cash-coin"></i> Venda no balcão
+            </a>
+            <a href="<?= route('orders.index') ?>" class="btn btn-danger">
+                <i class="bi bi-receipt"></i> Pedidos
+            </a>
+            <a href="<?= route('productions.index') ?>" class="btn btn-danger">
+                <i class="bi bi-fire"></i> Produção do dia
+            </a>
+            <a href="<?= route('purchases.index') ?>" class="btn btn-danger">
+                <i class="bi bi-cart"></i> Compras
+            </a>
+            <a href="<?= route('customers.index') ?>" class="btn btn-danger">
+                <i class="bi bi-person-lines-fill"></i> Clientes
+            </a>
+        </div>
+    </div>
+</div>

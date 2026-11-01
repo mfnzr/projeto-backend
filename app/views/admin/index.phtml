@@ -1,0 +1,24 @@
+<div class="card border-danger">
+    <div class="card-body">
+        <p class="card-text">
+            Olá, <strong><?= htmlspecialchars($this->currentUser()->name) ?></strong>! Você está na área administrativa.
+        </p>
+        <p class="card-text text-muted small">
+            Esta área é acessível apenas por administradores.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="<?= route('products.index') ?>" class="btn btn-danger">
+                <i class="bi bi-box-seam"></i> Gerenciar produtos
+            </a>
+            <a href="<?= route('side_dishes.index') ?>" class="btn btn-danger">
+                <i class="bi bi-egg-fried"></i> Gerenciar acompanhamentos
+            </a>
+            <a href="<?= route('users.index') ?>" class="btn btn-danger">
+                <i class="bi bi-people"></i> Gerenciar usuários
+            </a>
+            <a href="<?= route('reports.index') ?>" class="btn btn-danger">
+                <i class="bi bi-graph-up"></i> Relatório de margem
+            </a>
+        </div>
+    </div>
+</div>

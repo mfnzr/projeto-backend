@@ -1,0 +1,52 @@
+<div class="mb-3">
+    <a href="<?= route('productions.new') ?>" class="btn btn-danger">
+        <i class="bi bi-plus-lg"></i> Nova produção
+    </a>
+</div>
+
+<?php if (empty($productions)) : ?>
+    <p class="text-muted">Nenhuma produção registrada.</p>
+<?php else : ?>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Unidades</th>
+                    <th>Preço por kg</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($productions as $production) : ?>
+                    <tr>
+                        <td><?= $production->id ?></td>
+                        <td><?= date('d/m/Y', strtotime($production->production_date)) ?></td>
+                        <td><?= htmlspecialchars($production->product->name) ?></td>
+                        <td><?= $production->quantity ?></td>
+                        <td>R$ <?= number_format((float) $production->price_per_kg, 2, ',', '.') ?></td>
+                        <td class="text-end text-nowrap">
+                            <a href="<?= route('productions.show', ['id' => $production->id]) ?>" class="btn btn-sm btn-outline-secondary" title="Ver">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="<?= route('productions.edit', ['id' => $production->id]) ?>" class="btn btn-sm btn-outline-primary" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="<?= route('productions.destroy', ['id' => $production->id]) ?>" method="POST" class="d-inline"
+                                onsubmit="return confirm('Excluir esta produção?')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php $paginator->renderPagesNavigation(); ?>
+<?php endif; ?>

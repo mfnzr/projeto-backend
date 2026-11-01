@@ -1,0 +1,42 @@
+<div class="mb-3">
+    <label for="production_product_id" class="form-label">Produto</label>
+    <select id="production_product_id" name="production[product_id]"
+        class="form-select <?= $production->errors('product_id') ? 'is-invalid' : '' ?>">
+        <option value="">Selecione um produto</option>
+        <?php foreach ($products as $product) : ?>
+            <option value="<?= $product->id ?>" <?= $production->product_id == $product->id ? 'selected' : '' ?>>
+                <?= htmlspecialchars($product->name) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <div class="invalid-feedback"><?= $production->errors('product_id') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="production_production_date" class="form-label">Data</label>
+    <input type="date" id="production_production_date" name="production[production_date]"
+        class="form-control <?= $production->errors('production_date') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($production->production_date ?? '') ?>">
+    <div class="invalid-feedback"><?= $production->errors('production_date') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="production_quantity" class="form-label">Unidades no forno</label>
+    <input type="number" id="production_quantity" name="production[quantity]" step="1"
+        class="form-control <?= $production->errors('quantity') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($production->quantity ?? '') ?>">
+    <div class="invalid-feedback"><?= $production->errors('quantity') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="production_price_per_kg" class="form-label">Preço por kg do dia (R$)</label>
+    <input type="number" id="production_price_per_kg" name="production[price_per_kg]" step="0.01"
+        class="form-control <?= $production->errors('price_per_kg') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($production->price_per_kg ?? '') ?>">
+    <div class="invalid-feedback"><?= $production->errors('price_per_kg') ?></div>
+</div>
+
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">Salvar</button>
+    <a href="<?= route('productions.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+</div>

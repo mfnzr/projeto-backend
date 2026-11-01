@@ -1,0 +1,50 @@
+<div class="mb-3">
+    <label for="purchase_product_id" class="form-label">Produto</label>
+    <select id="purchase_product_id" name="purchase[product_id]"
+        class="form-select <?= $purchase->errors('product_id') ? 'is-invalid' : '' ?>">
+        <option value="">Selecione um produto</option>
+        <?php foreach ($products as $product) : ?>
+            <option value="<?= $product->id ?>" <?= $purchase->product_id == $product->id ? 'selected' : '' ?>>
+                <?= htmlspecialchars($product->name) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <div class="invalid-feedback"><?= $purchase->errors('product_id') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="purchase_purchase_date" class="form-label">Data da compra</label>
+    <input type="date" id="purchase_purchase_date" name="purchase[purchase_date]"
+        class="form-control <?= $purchase->errors('purchase_date') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($purchase->purchase_date ?? '') ?>">
+    <div class="invalid-feedback"><?= $purchase->errors('purchase_date') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="purchase_quantity" class="form-label">Unidades compradas</label>
+    <input type="number" id="purchase_quantity" name="purchase[quantity]" step="1"
+        class="form-control <?= $purchase->errors('quantity') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($purchase->quantity ?? '') ?>">
+    <div class="invalid-feedback"><?= $purchase->errors('quantity') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="purchase_total_amount" class="form-label">Valor total pago (R$)</label>
+    <input type="number" id="purchase_total_amount" name="purchase[total_amount]" step="0.01"
+        class="form-control <?= $purchase->errors('total_amount') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($purchase->total_amount ?? '') ?>">
+    <div class="invalid-feedback"><?= $purchase->errors('total_amount') ?></div>
+</div>
+
+<div class="mb-3">
+    <label for="purchase_price_per_kg" class="form-label">Preço por kg pago (R$) <span class="text-muted small">(opcional)</span></label>
+    <input type="number" id="purchase_price_per_kg" name="purchase[price_per_kg]" step="0.01"
+        class="form-control <?= $purchase->errors('price_per_kg') ? 'is-invalid' : '' ?>"
+        value="<?= htmlspecialchars($purchase->price_per_kg ?? '') ?>">
+    <div class="invalid-feedback"><?= $purchase->errors('price_per_kg') ?></div>
+</div>
+
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-danger">Salvar</button>
+    <a href="<?= route('purchases.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+</div>

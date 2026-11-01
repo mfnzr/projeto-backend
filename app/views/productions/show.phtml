@@ -1,0 +1,15 @@
+<div class="card col-md-6">
+    <div class="card-body">
+        <h2 class="h4 card-title"><?= htmlspecialchars($production->product->name) ?></h2>
+        <p class="card-text mb-1"><strong>Data:</strong> <?= date('d/m/Y', strtotime($production->production_date)) ?></p>
+        <p class="card-text mb-1"><strong>Unidades no forno:</strong> <?= $production->quantity ?></p>
+        <p class="card-text"><strong>Preço por kg:</strong> R$ <?= number_format((float) $production->price_per_kg, 2, ',', '.') ?></p>
+
+        <div class="d-flex gap-2">
+            <a href="<?= route('productions.edit', ['id' => $production->id]) ?>" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="<?= route('productions.index') ?>" class="btn btn-outline-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

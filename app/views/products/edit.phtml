@@ -1,0 +1,4 @@
+<form action="<?= route('products.update', ['id' => $product->id]) ?>" method="POST" class="col-md-6">
+    <input type="hidden" name="_method" value="PUT">
+    <?php require '_form.phtml'; ?>
+</form>

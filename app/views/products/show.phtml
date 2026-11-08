@@ -13,3 +13,37 @@
         </div>
     </div>
 </div>
+
+<h3 class="h5 mt-4">Fotos</h3>
+
+<form action="<?= route('product_photos.create', ['product_id' => $product->id]) ?>" method="POST"
+    enctype="multipart/form-data" class="col-md-6 mb-3">
+    <div class="input-group">
+        <input type="file" id="product_photo" name="photo" class="form-control" accept="image/jpeg,image/png">
+        <button type="submit" class="btn btn-danger">Enviar foto</button>
+    </div>
+    <div class="form-text">JPEG ou PNG, até 2 MB.</div>
+</form>
+
+<?php if (empty($photos)) : ?>
+    <p class="text-muted">Nenhuma foto cadastrada.</p>
+<?php else : ?>
+    <div class="row g-3">
+        <?php foreach ($photos as $photo) : ?>
+            <div class="col-6 col-md-3">
+                <div class="card">
+                    <img src="<?= $photo->url() ?>" class="card-img-top" alt="Foto de <?= htmlspecialchars($product->name) ?>">
+                    <div class="card-body p-2 text-end">
+                        <form action="<?= route('product_photos.destroy', ['product_id' => $product->id, 'id' => $photo->id]) ?>"
+                            method="POST" onsubmit="return confirm('Excluir esta foto?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir foto">
+                                <i class="bi bi-trash"></i> Excluir
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

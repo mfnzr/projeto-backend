@@ -7,6 +7,7 @@ use App\Controllers\AdminController;
 use App\Controllers\CustomersController;
 use App\Controllers\OrdersController;
 use App\Controllers\ProductionsController;
+use App\Controllers\ProductPhotosController;
 use App\Controllers\ProductsController;
 use App\Controllers\PurchasesController;
 use App\Controllers\ReportsController;
@@ -74,6 +75,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/products/{id}/edit', [ProductsController::class, 'edit'])->name('products.edit');
         Route::put('/admin/products/{id}', [ProductsController::class, 'update'])->name('products.update');
         Route::delete('/admin/products/{id}', [ProductsController::class, 'destroy'])->name('products.destroy');
+
+        Route::post('/admin/products/{product_id}/photos', [ProductPhotosController::class, 'create'])
+            ->name('product_photos.create');
+        Route::delete('/admin/products/{product_id}/photos/{id}', [ProductPhotosController::class, 'destroy'])
+            ->name('product_photos.destroy');
 
         Route::get('/admin/side-dishes', [SideDishesController::class, 'index'])->name('side_dishes.index');
         Route::get('/admin/side-dishes/new', [SideDishesController::class, 'new'])->name('side_dishes.new');

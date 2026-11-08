@@ -14,6 +14,7 @@ use Core\Database\ActiveRecord\Model;
  * @property Purchase[] $purchases
  * @property OrderItem[] $orderItems
  * @property SaleItem[] $saleItems
+ * @property ProductPhoto[] $photos
  */
 class Product extends Model
 {
@@ -65,5 +66,10 @@ class Product extends Model
     public function saleItems(): HasMany
     {
         return $this->hasMany(SaleItem::class, 'product_id');
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ProductPhoto::class, 'product_id');
     }
 }

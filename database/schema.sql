@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS purchases;
 DROP TABLE IF EXISTS productions;
 DROP TABLE IF EXISTS side_dishes;
 DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS product_photos;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS users;
 
@@ -26,6 +27,14 @@ CREATE TABLE products (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     UNIQUE KEY uq_products_name (name)
+) ENGINE=InnoDB;
+
+CREATE TABLE product_photos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    file_name VARCHAR(65) NOT NULL,
+    CONSTRAINT fk_product_photos_product_id
+        FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE customers (

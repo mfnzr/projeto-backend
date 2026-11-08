@@ -3,7 +3,9 @@
 namespace Tests\Integration\Access;
 
 use App\Models\Product;
+use App\Models\ProductPhoto;
 use App\Models\User;
+use Core\Constants\Constants;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -106,6 +108,55 @@ class AdminAccessTest extends TestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(0, Product::all());
+    }
+
+    public function test_guest_cannot_upload_product_photo(): void
+    {
+        $product = new Product(['name' => 'Frango assado']);
+        $product->save();
+
+        $response = $this->client->post('/admin/products/' . $product->id . '/photos', [
+            'multipart' => [
+                ['name' => 'photo', 'contents' => fopen(Constants::rootPath()->join('tests/files/avatar_test.jpg'), 'r')]
+            ]
+        ]);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertCount(0, ProductPhoto::all());
+    }
+
+    public function test_attendant_cannot_upload_product_photo(): void
+    {
+        $product = new Product(['name' => 'Frango assado']);
+        $product->save();
+        $this->login('fulano@example.com');
+
+        $response = $this->client->post('/admin/products/' . $product->id . '/photos', [
+            'multipart' => [
+                ['name' => 'photo', 'contents' => fopen(Constants::rootPath()->join('tests/files/avatar_test.jpg'), 'r')]
+            ]
+        ]);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/', $response->getHeaderLine('Location'));
+        $this->assertCount(0, ProductPhoto::all());
+    }
+
+    public function test_attendant_cannot_delete_product_photo(): void
+    {
+        $product = new Product(['name' => 'Frango assado']);
+        $product->save();
+        $photo = new ProductPhoto(['product_id' => $product->id, 'file_name' => 'frango.jpg']);
+        $photo->save();
+        $this->login('fulano@example.com');
+
+        $response = $this->client->post('/admin/products/' . $product->id . '/photos/' . $photo->id, [
+            'form_params' => ['_method' => 'DELETE']
+        ]);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/', $response->getHeaderLine('Location'));
+        $this->assertCount(1, ProductPhoto::all());
     }
 
     public function test_attendant_cannot_create_user(): void

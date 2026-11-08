@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Core\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Services\ProductPhotoUpload;
 use Lib\FlashMessage;
 use Core\Http\Request;
 
@@ -95,7 +96,15 @@ class ProductsController extends Controller
         if ($product->hasMovements()) {
             FlashMessage::danger("Não é possível excluir um produto com produções, compras, pedidos ou vendas registrados");
             $this->redirectTo(route('products.index'));
-        } elseif ($product->destroy()) {
+            return;
+        }
+
+        foreach ($product->photos as $photo) {
+            $upload = new ProductPhotoUpload($photo);
+            $upload->remove();
+        }
+
+        if ($product->destroy()) {
             FlashMessage::success("Produto excluido com sucesso!");
             $this->redirectTo(route('products.index'));
         } else {
@@ -115,6 +124,8 @@ class ProductsController extends Controller
             $this->redirectTo(route('products.index'));
         }
 
-        $this->render('products/show', compact('product', 'title'));
+        $photos = $product->photos;
+
+        $this->render('products/show', compact('product', 'photos', 'title'));
     }
 }

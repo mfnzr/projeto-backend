@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Lib\Validations;
 use Core\Database\ActiveRecord\BelongsTo;
+use Core\Database\ActiveRecord\BelongsToMany;
 use Core\Database\ActiveRecord\HasMany;
 use Core\Database\ActiveRecord\Model;
 
@@ -15,6 +16,7 @@ use Core\Database\ActiveRecord\Model;
  * @property Customer $customer
  * @property OrderItem[] $items
  * @property Sale[] $sales
+ * @property SideDish[] $sideDishes
  */
 class Order extends Model
 {
@@ -151,6 +153,21 @@ class Order extends Model
         return $total;
     }
 
+    public function sideDishNames(): string
+    {
+        $names = [];
+
+        foreach ($this->sideDishes as $sideDish) {
+            $names[] = $sideDish->name;
+        }
+
+        if (count($names) === 0) {
+            return '-';
+        }
+
+        return implode(', ', $names);
+    }
+
     public function statusName(): string
     {
         return self::STATUSES[$this->status];
@@ -179,5 +196,10 @@ class Order extends Model
     public function sales(): HasMany
     {
         return $this->hasMany(Sale::class, 'order_id');
+    }
+
+    public function sideDishes(): BelongsToMany
+    {
+        return $this->belongsToMany(SideDish::class, 'order_side_dishes', 'order_id', 'side_dish_id');
     }
 }

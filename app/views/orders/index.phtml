@@ -15,6 +15,7 @@
                     <th>Data</th>
                     <th>Cliente</th>
                     <th>Unidades</th>
+                    <th>Acompanhamentos</th>
                     <th>Status</th>
                     <th class="text-end">Ações</th>
                 </tr>
@@ -26,6 +27,7 @@
                         <td><?= date('d/m/Y H:i', strtotime($order->created_at)) ?></td>
                         <td><?= htmlspecialchars($order->customer->name) ?></td>
                         <td><?= $order->totalUnits() ?></td>
+                        <td><?= htmlspecialchars($order->sideDishNames()) ?></td>
                         <td><?= $order->statusName() ?></td>
                         <td class="text-end text-nowrap">
                             <a href="<?= route('orders.show', ['id' => $order->id]) ?>" class="btn btn-sm btn-outline-secondary" title="Ver">

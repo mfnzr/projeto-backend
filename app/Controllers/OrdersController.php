@@ -6,6 +6,7 @@ use Core\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Production;
+use App\Models\SideDish;
 use Lib\FlashMessage;
 use Core\Http\Request;
 
@@ -36,7 +37,10 @@ class OrdersController extends Controller
             $this->redirectTo(route('orders.index'));
         }
 
-        $this->render('orders/show', compact('title', 'order'));
+        $orderSideDishes = $order->sideDishes;
+        $sideDishes = SideDish::all();
+
+        $this->render('orders/show', compact('title', 'order', 'orderSideDishes', 'sideDishes'));
     }
 
     public function new(): void

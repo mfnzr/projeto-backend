@@ -5,6 +5,7 @@ use App\Controllers\HomeController;
 use Core\Router\Route;
 use App\Controllers\AdminController;
 use App\Controllers\CustomersController;
+use App\Controllers\OrderSideDishesController;
 use App\Controllers\OrdersController;
 use App\Controllers\ProductionsController;
 use App\Controllers\ProductPhotosController;
@@ -55,6 +56,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/orders/{id}', [OrdersController::class, 'update'])->name('orders.update');
     Route::put('/orders/{id}/cancel', [OrdersController::class, 'cancel'])->name('orders.cancel');
     Route::delete('/orders/{id}', [OrdersController::class, 'destroy'])->name('orders.destroy');
+
+    Route::post('/orders/{order_id}/side-dishes', [OrderSideDishesController::class, 'create'])
+        ->name('order_side_dishes.create');
+    Route::delete('/orders/{order_id}/side-dishes/{side_dish_id}', [OrderSideDishesController::class, 'destroy'])
+        ->name('order_side_dishes.destroy');
 
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
     Route::get('/sales/new', [SalesController::class, 'new'])->name('sales.new');

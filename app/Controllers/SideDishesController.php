@@ -104,6 +104,12 @@ class SideDishesController extends Controller
             $this->redirectTo(route('side_dishes.index'));
         }
 
+        if ($sideDish->hasOrders()) {
+            FlashMessage::danger("Não é possível excluir um acompanhamento que está em pedidos");
+            $this->redirectTo(route('side_dishes.index'));
+            return;
+        }
+
         if ($sideDish->destroy()) {
             FlashMessage::success("Acompanhamento excluído com sucesso!");
             $this->redirectTo(route('side_dishes.index'));

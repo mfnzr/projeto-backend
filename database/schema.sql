@@ -3,6 +3,7 @@ SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS sale_items;
 DROP TABLE IF EXISTS sales;
 DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS order_side_dishes;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS purchases;
 DROP TABLE IF EXISTS productions;
@@ -91,6 +92,17 @@ CREATE TABLE order_items (
         FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
     CONSTRAINT fk_order_items_product_id
         FOREIGN KEY (product_id) REFERENCES products (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE order_side_dishes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    side_dish_id INT NOT NULL,
+    UNIQUE KEY uq_order_side_dishes_order_id_side_dish_id (order_id, side_dish_id),
+    CONSTRAINT fk_order_side_dishes_order_id
+        FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+    CONSTRAINT fk_order_side_dishes_side_dish_id
+        FOREIGN KEY (side_dish_id) REFERENCES side_dishes (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE sales (

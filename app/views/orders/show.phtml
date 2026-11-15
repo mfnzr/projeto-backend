@@ -22,6 +22,43 @@
             </tbody>
         </table>
 
+        <h3 class="h6">Acompanhamentos</h3>
+
+        <?php if (empty($orderSideDishes)) : ?>
+            <p id="no_side_dishes" class="text-muted">Nenhum acompanhamento.</p>
+        <?php else : ?>
+            <p id="no_side_dishes" class="text-muted d-none">Nenhum acompanhamento.</p>
+        <?php endif; ?>
+
+        <ul id="side_dish_list" class="list-group mb-3">
+            <?php foreach ($orderSideDishes as $sideDish) : ?>
+                <li id="side_dish_<?= $sideDish->id ?>" class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><?= htmlspecialchars($sideDish->name) ?> - R$ <?= number_format((float) $sideDish->price, 2, ',', '.') ?></span>
+                    <?php if ($order->isOrdered()) : ?>
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-side-dish"
+                            data-url="<?= route('order_side_dishes.destroy', ['order_id' => $order->id, 'side_dish_id' => $sideDish->id]) ?>">
+                            <i class="bi bi-trash"></i> Remover
+                        </button>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+        <?php if ($order->isOrdered()) : ?>
+            <div class="input-group mb-2">
+                <select id="side_dish_select" class="form-select">
+                    <?php foreach ($sideDishes as $sideDish) : ?>
+                        <option value="<?= $sideDish->id ?>"><?= htmlspecialchars($sideDish->name) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" id="add_side_dish" class="btn btn-outline-success"
+                    data-url="<?= route('order_side_dishes.create', ['order_id' => $order->id]) ?>">
+                    <i class="bi bi-plus-lg"></i> Adicionar
+                </button>
+            </div>
+            <div id="side_dish_message" class="text-danger small mb-3"></div>
+        <?php endif; ?>
+
         <div class="d-flex flex-wrap gap-2">
             <?php if ($order->isOrdered()) : ?>
                 <a href="<?= route('sales.new', ['order_id' => $order->id]) ?>" class="btn btn-success">
@@ -42,3 +79,5 @@
         </div>
     </div>
 </div>
+
+<script src="/assets/js/order_side_dishes.js"></script>

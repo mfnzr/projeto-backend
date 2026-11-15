@@ -1,0 +1,3 @@
+<?php
+
+$json['error'] = $message;

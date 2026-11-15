@@ -3,6 +3,11 @@
 namespace Tests\Integration\Access;
 
 use App\Models\Customer;
+use App\Models\Order;
+use App\Models\OrderSideDish;
+use App\Models\Product;
+use App\Models\Production;
+use App\Models\SideDish;
 use App\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
@@ -87,5 +92,66 @@ class AuthenticatedAccessTest extends TestCase
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/login', $response->getHeaderLine('Location'));
         $this->assertCount(0, Customer::all());
+    }
+
+    private function createOrder(): Order
+    {
+        $customer = new Customer(['name' => 'Maria', 'phone' => '42999990000']);
+        $customer->save();
+
+        $product = new Product(['name' => 'Frango assado']);
+        $product->save();
+
+        $production = new Production([
+            'product_id' => $product->id,
+            'production_date' => date('Y-m-d'),
+            'quantity' => '10',
+            'price_per_kg' => '45.90'
+        ]);
+        $production->save();
+
+        $order = new Order([
+            'customer_id' => $customer->id,
+            'status' => 'ordered',
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+        $order->setQuantities([$product->id => 2]);
+        $order->save();
+
+        return $order;
+    }
+
+    public function test_guest_cannot_add_side_dish_to_order(): void
+    {
+        $order = $this->createOrder();
+        $sideDish = new SideDish(['name' => 'Farofa', 'price' => '8.00']);
+        $sideDish->save();
+
+        $response = $this->client->post('/orders/' . $order->id . '/side-dishes', [
+            'headers' => ['Accept' => 'application/json'],
+            'form_params' => ['side_dish_id' => $sideDish->id]
+        ]);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/login', $response->getHeaderLine('Location'));
+        $this->assertCount(0, OrderSideDish::all());
+    }
+
+    public function test_guest_cannot_remove_side_dish_from_order(): void
+    {
+        $order = $this->createOrder();
+        $sideDish = new SideDish(['name' => 'Farofa', 'price' => '8.00']);
+        $sideDish->save();
+        $orderSideDish = new OrderSideDish(['order_id' => $order->id, 'side_dish_id' => $sideDish->id]);
+        $orderSideDish->save();
+
+        $response = $this->client->post('/orders/' . $order->id . '/side-dishes/' . $sideDish->id, [
+            'headers' => ['Accept' => 'application/json'],
+            'form_params' => ['_method' => 'DELETE']
+        ]);
+
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('/login', $response->getHeaderLine('Location'));
+        $this->assertCount(1, OrderSideDish::all());
     }
 }
